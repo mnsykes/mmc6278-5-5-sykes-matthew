@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Music Store</title>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <a href="/">
+        <h1 class="logo">Music Shop🎸</h1>
+      </a>
+    </div>
+  </header>
+  <main>
+    <h2>Cart</h2>
+    <p>
+      <a href="/">Return to Store Page</a>
+    </p>
+    <section id="cart"></section>
+  </main>
+  <footer>
+    <p>
+      API:
+      <a href="/api/inventory">inventory</a>,
+      <a href="/api/cart">cart</a>
+    </p>
+    <p>&copy; Music Shop</p>
+  </footer>
+  <script src="index.js"></script>
+  <script>
+    loadCart()
+  </script>
+</body>
+</html>

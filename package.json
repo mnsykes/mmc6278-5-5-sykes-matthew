@@ -1,0 +1,31 @@
+{
+  "name": "music_shop_api",
+  "version": "1.0.0",
+  "description": "The Music Shop API assignment using MySQL and Express.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "npm run mysql:stop; npm run mysql:start && node test/db_check.js && nodemon index.js",
+    "test": "npm run test:run",
+    "test:watch": "export FLAG=--watch && npm run test:run",
+    "test:run": "npm run mysql:stop; npm run mysql:start && node test/db_check.js && mocha test/tests.js $FLAG; npm run mysql:stop",
+    "mysql:start": "export FLAG=-d DB_NAME=music_shop_db && npm run mysql:run",
+    "mysql:start:log": "export FLAG=-it DB_NAME=music_shop_db && npm run mysql:run",
+    "mysql:run": "docker run $FLAG --rm -p 3306:3306 -v $(pwd)/schema:/docker-entrypoint-initdb.d --name=mysql-sandbox -e MYSQL_ALLOW_EMPTY_PASSWORD=root -e MYSQL_DATABASE=$DB_NAME mysql:8 mysqld --authentication_policy=mysql_native_password",
+    "mysql:stop": "docker container stop mysql-sandbox",
+    "mysql:shell": "docker exec -it mysql-sandbox mysql"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "mysql2": "^2.3.3"
+  },
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "mocha": "^10.0.0",
+    "nodemon": "^2.0.16",
+    "supertest": "^6.2.3"
+  }
+}
