@@ -49,32 +49,29 @@ router
 			res.status(500).send("Error");
 		}
 	})
-
 	.put(async (req, res) => {
 		try {
 			const { name, image, description, price, quantity } = req.body;
-			if (!(name && image && description && price && quantity))
-				return res.status(404).send("must include all items");
+			if (!(name && image && description && price && quantity)) {
+				return res.status(400).send("must include all items");
+			}
 			const [{ affectedRows }] = await db.query(
 				`
-        UPDATE inventory
-        SET ? WHERE id = ?
-        `,
-				[{ name, image, description, price, quantity }],
-				req.params.id
+				UPDATE inventory 
+				SET ? WHERE id = ?
+				`,
+				[{ name, image, description, price, quantity }, req.params.id]
 			);
 			if (affectedRows === 0) return res.status(404).send("Item not found");
-			res.status(204).end();
+			res.status(204).send("Item updated");
 		} catch (err) {
-			res.status(500).send("Error");
+			res.status(500).send(err);
 		}
 	})
 	.delete(async (req, res) => {
 		try {
 			const [{ affectedRows }] = await db.query(
-				`
-        DELETE FROM inventory WHERE id = ?
-      `,
+				`DELETE FROM inventory WHERE id = ?`,
 				req.params.id
 			);
 			if (affectedRows === 0) return res.status(404).send("not found");
@@ -89,18 +86,18 @@ router
 	.get(async (req, res) => {
 		const [cartItems] = await db.query(
 			`SELECT
-        cart.id,
-        cart.inventory_id AS inventoryId,
-        cart.quantity,
-        inventory.price,
-        inventory.name,
-        inventory.image,
-        inventory.quantity AS inventoryQuantity
-      FROM cart INNER JOIN inventory ON cart.inventory_id=inventory.id`
+			cart.id,
+			cart.inventory_id AS inventoryId,
+			cart.quantity,
+			inventory.price,
+			inventory.name,
+			inventory.image,
+			inventory.quantity AS inventoryQuantity
+      		FROM cart INNER JOIN inventory ON cart.inventory_id=inventory.id`
 		);
 		const [[{ total }]] = await db.query(
 			`SELECT SUM(cart.quantity * inventory.price) AS total
-       FROM cart, inventory WHERE cart.inventory_id=inventory.id`
+       		FROM cart, inventory WHERE cart.inventory_id=inventory.id`
 		);
 		res.json({ cartItems, total: total || 0 });
 	})
